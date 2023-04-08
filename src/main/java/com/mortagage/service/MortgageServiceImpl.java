@@ -8,11 +8,11 @@ import com.mortagage.repository.RateRepository;
 import com.mortagage.util.EligibilityRules;
 import org.springframework.stereotype.Service;
 
-import static com.mortagage.util.Calculator.*;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
+import static com.mortagage.util.Calculator.calculateMortgageCost;
 
 @Service
 public class MortgageServiceImpl implements MortgageService {

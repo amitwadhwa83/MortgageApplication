@@ -27,7 +27,7 @@ public class MortgageController {
     }
 
     @PostMapping("mortgage-check")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Post the parameters to calculate for a mortgage check")
     public EligibilityReport checkEligibility(@RequestBody EligibilityCheck eligibilityCheck) throws RateNotFoundException {
         return mortgageService.checkEligibility(eligibilityCheck);

@@ -30,7 +30,7 @@ public class MortgageServiceTest {
     @Test
     @DisplayName("When all rates are requested then they are all returned")
     public void expectRatesListForListRate() {
-        when(rateRepository.findAll()).thenReturn(aListOfRates());
+        when(rateRepository.findAll()).thenReturn(aListOfRate());
         List<Rate> response = mortgageService.listRate();
         verify(rateRepository, times(1)).findAll();
         assertFalse(response.isEmpty());
@@ -55,7 +55,7 @@ public class MortgageServiceTest {
     @DisplayName("When eligibility is requested with input passing business rules then will get report with a rate")
     public void expectSuccessfulEligibiltyReportForEligibilityCheckForValidInput() throws RateNotFoundException {
         when(eligibilityRules.check(any(), any(), any())).thenReturn(true);
-        Rate rate = aRate();
+        Rate rate = aRandomRate();
         when(rateRepository.findByMaturityPeriod(anyInt())).thenReturn(Optional.of(rate));
         EligibilityCheck eligibilityCheck = new EligibilityCheck(BigDecimal.valueOf(40),
                 12, BigDecimal.valueOf(10), BigDecimal.valueOf(10));
@@ -73,11 +73,11 @@ public class MortgageServiceTest {
                 12, BigDecimal.valueOf(10), BigDecimal.valueOf(10)));
     }
 
-    private List<Rate> aListOfRates() {
-        return List.of(new Rate(), aRate());
+    private List<Rate> aListOfRate() {
+        return List.of(new Rate(), aRandomRate());
     }
 
-    private Rate aRate() {
+    private Rate aRandomRate() {
         return new Rate(random.nextInt(2), random.nextDouble(4)
                 , LocalDateTime.now());
     }
