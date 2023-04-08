@@ -12,7 +12,6 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-//http://localhost:8080/swagger-ui/index.html
 public class MortgageApplication implements WebMvcConfigurer {
 
     public static void main(String[] args) {

@@ -12,7 +12,8 @@ public class LoggingInterceptor implements HandlerInterceptor {
     private static final Log LOG = LogFactory.getLog(LoggingInterceptor.class);
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+                                @Nullable Exception ex) {
         StringBuilder logMessage = new StringBuilder();
         logMessage.append("method: ").append(request.getMethod()).append("\t");
         logMessage.append("uri: ").append(request.getRequestURI()).append("\t");
