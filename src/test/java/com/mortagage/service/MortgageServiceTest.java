@@ -28,67 +28,49 @@ public class MortgageServiceTest {
     Random random = new Random();
 
     @Test
-    @DisplayName("When invoked will list all available current interest rates")
+    @DisplayName("When all rates are requested then they are all returned")
     public void expectRatesListForListRate() {
-        //Given
         when(rateRepository.findAll()).thenReturn(aListOfRates());
-        //When
         List<Rate> response = mortgageService.listRate();
-        //Then
         verify(rateRepository, times(1)).findAll();
         assertFalse(response.isEmpty());
     }
 
     @Test
-    @DisplayName("When invoked will get the default eligibility rate for a mortgage check")
+    @DisplayName("When eligibility is requested with empty input then will get the default eligibility rate")
     public void expectDefaultReportForEligibilityCheckWithEmptyInput() throws RateNotFoundException {
-        //When
-        EligibilityReport response = mortgageService.checkEligibility(null);
-        //Then
-        assertTrue(response.equals(EligibilityReport.DEFAULT));
+        assertTrue(mortgageService.checkEligibility(null).equals(EligibilityReport.DEFAULT));
     }
 
     @Test
-    @DisplayName("When invoked will get default/failed eligibility rate for a mortgage check")
+    @DisplayName("When eligibility is requested with business rules violating input then will get the default eligibility rate")
     public void expectDefaultEligibiltyReportForEligibilityCheckForRulesViolations() throws RateNotFoundException {
-        //Given
         when(eligibilityRules.check(any(), any(), any())).thenReturn(false);
         EligibilityCheck eligibilityCheck = new EligibilityCheck(BigDecimal.valueOf(10),
                 12, BigDecimal.valueOf(10), BigDecimal.valueOf(10));
-        //When
-        EligibilityReport response = mortgageService.checkEligibility(eligibilityCheck);
-        //Then
-        assertTrue(response.equals(EligibilityReport.DEFAULT));
+        assertTrue(mortgageService.checkEligibility(eligibilityCheck).equals(EligibilityReport.DEFAULT));
     }
 
     @Test
-    @DisplayName("When invoked will get eligibility passed report with a proper rate for a mortgage check")
+    @DisplayName("When eligibility is requested with input passing business rules then will get report with a rate")
     public void expectSuccessfulEligibiltyReportForEligibilityCheckForValidInput() throws RateNotFoundException {
-        //Given
         when(eligibilityRules.check(any(), any(), any())).thenReturn(true);
         Rate rate = aRate();
         when(rateRepository.findByMaturityPeriod(anyInt())).thenReturn(Optional.of(rate));
         EligibilityCheck eligibilityCheck = new EligibilityCheck(BigDecimal.valueOf(40),
                 12, BigDecimal.valueOf(10), BigDecimal.valueOf(10));
-        //When
         EligibilityReport response = mortgageService.checkEligibility(eligibilityCheck);
-        //Then
         assertFalse(response.equals(EligibilityReport.DEFAULT));
         assertNotNull(response.mortgageCost());
         assertTrue(response.isEligible());
     }
 
     @Test(expected = RateNotFoundException.class)
-    @DisplayName("When invoked will fail for rate not found exception for a mortgage check")
+    @DisplayName("When eligibility is requested with non existent maturity period then will fail with exception")
     public void expectExceptionForEligibleCheckWhenRateDoesNotExist() throws RateNotFoundException {
-        //Given
         when(eligibilityRules.check(any(), any(), any())).thenReturn(true);
-        EligibilityCheck eligibilityCheck = new EligibilityCheck(BigDecimal.valueOf(40),
-                12, BigDecimal.valueOf(10), BigDecimal.valueOf(10));
-        //When
-        mortgageService.checkEligibility(eligibilityCheck);
-        //Then
-        // expect exception
+        mortgageService.checkEligibility(new EligibilityCheck(BigDecimal.valueOf(40),
+                12, BigDecimal.valueOf(10), BigDecimal.valueOf(10)));
     }
 
     private List<Rate> aListOfRates() {
