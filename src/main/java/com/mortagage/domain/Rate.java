@@ -23,7 +23,6 @@ public class Rate {
     private LocalDateTime lastUpdate;
 
     public Rate() {
-
     }
 
     public Rate(int maturityPeriod, double interestRate, LocalDateTime lastUpdate) {

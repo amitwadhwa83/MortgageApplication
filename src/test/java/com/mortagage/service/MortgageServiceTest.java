@@ -41,7 +41,7 @@ public class MortgageServiceTest {
 
     @Test
     @DisplayName("When invoked will get the default eligibility rate for a mortgage check")
-    public void expectDefaultReportForEmptyInput() throws RateNotFoundException {
+    public void expectDefaultReportForEligibilityCheckWithEmptyInput() throws RateNotFoundException {
         //When
         EligibilityReport response = mortgageService.checkEligibility(null);
         //Then
@@ -50,7 +50,7 @@ public class MortgageServiceTest {
 
     @Test
     @DisplayName("When invoked will get default/failed eligibility rate for a mortgage check")
-    public void expectDefaultEligibiltyReportForRulesViolations() throws RateNotFoundException {
+    public void expectDefaultEligibiltyReportForEligibilityCheckForRulesViolations() throws RateNotFoundException {
         //Given
         when(eligibilityRules.check(any(), any(), any())).thenReturn(false);
         EligibilityCheck eligibilityCheck = new EligibilityCheck(BigDecimal.valueOf(10),
@@ -63,7 +63,7 @@ public class MortgageServiceTest {
 
     @Test
     @DisplayName("When invoked will get eligibility passed report with a proper rate for a mortgage check")
-    public void expectSuccessfulEligibiltyReportForValidInput() throws RateNotFoundException {
+    public void expectSuccessfulEligibiltyReportForEligibilityCheckForValidInput() throws RateNotFoundException {
         //Given
         when(eligibilityRules.check(any(), any(), any())).thenReturn(true);
         Rate rate = aRate();
