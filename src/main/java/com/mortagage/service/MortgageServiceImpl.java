@@ -32,19 +32,16 @@ public class MortgageServiceImpl implements MortgageService {
 
     @Override
     public EligibilityReport checkEligibility(EligibilityCheck check) throws RateNotFoundException {
-        if (null == check)
-            return EligibilityReport.DEFAULT;
+        if (check == null) return EligibilityReport.DEFAULT;
 
         boolean isEligible = eligibilityRules.check(check.income(), check.loanValue(), check.homeValue());
-        BigDecimal mortgageCost = BigDecimal.ZERO;
-        if (isEligible) {
-            int period = check.maturityPeriod();
-            Optional<Rate> rate = rateRepository.findByMaturityPeriod(period);
-            if (!rate.isPresent()) {
-                throw new RateNotFoundException(period);
-            }
-            mortgageCost = calculateMortgageCost(check.loanValue(), period, rate.get());
-        }
-        return new EligibilityReport(isEligible, mortgageCost);
+        if (!isEligible) return new EligibilityReport(false, BigDecimal.ZERO);
+
+        int period = check.maturityPeriod();
+        Rate rate = rateRepository.findByMaturityPeriod(period)
+                .orElseThrow(() -> new RateNotFoundException(period));
+
+        BigDecimal mortgageCost = calculateMortgageCost(check.loanValue(), period, rate);
+        return new EligibilityReport(true, mortgageCost);
     }
 }
